@@ -23,6 +23,7 @@
             <l:HorizontalLayout class="sapUiContentPadding"> 
                     <Button text="Add Book" press="onAddButton"></Button>
                     <Button text="Update Book" press="onUpdateButton"></Button>
+                    <Button text="Delete Book" press="onDeleteButton"></Button>
             </l:HorizontalLayout>
         </content>
     </Page>

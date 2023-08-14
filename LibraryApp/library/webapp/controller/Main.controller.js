@@ -119,19 +119,19 @@ sap.ui.define([
                 if (selectedItem === null)
                     MessageBox.error("No selected book!")
                 else {
-                this.updateBookDialog = sap.ui.xmlfragment("library.view.dialogs.UpdateBook", this);
-                this.getView().addDependent(this.updateBookDialog);
-                this.updateBookDialog.open();
+                    this.updateBookDialog = sap.ui.xmlfragment("library.view.dialogs.UpdateBook", this);
+                    this.getView().addDependent(this.updateBookDialog);
+                    this.updateBookDialog.open();
 
-                const title = selectedItem.getCells()[0].getText();
-                const author = selectedItem.getCells()[1].getText();
-                const genre = selectedItem.getCells()[2].getText();
-                const year = selectedItem.getCells()[3].getText();
+                    const title = selectedItem.getCells()[0].getText();
+                    const author = selectedItem.getCells()[1].getText();
+                    const genre = selectedItem.getCells()[2].getText();
+                    const year = selectedItem.getCells()[3].getText();
 
-                sap.ui.getCore().byId("titleInput").setValue(title);
-                sap.ui.getCore().byId("authorInput").setValue(author);
-                sap.ui.getCore().byId("genreInput").setValue(genre);
-                sap.ui.getCore().byId("yearInput").setValue(year);
+                    sap.ui.getCore().byId("titleInput").setValue(title);
+                    sap.ui.getCore().byId("authorInput").setValue(author);
+                    sap.ui.getCore().byId("genreInput").setValue(genre);
+                    sap.ui.getCore().byId("yearInput").setValue(year);
                 }
             },
             onAfterCloseUpdateDialog: function() {
@@ -149,16 +149,40 @@ sap.ui.define([
                 const isValid = this.validate(title, author, genre, year);
 
                 if (isValid === true) {
+                    const booksTable = this.getView().byId("booksTable");
+                    const selectedItem = booksTable.getSelectedItem();
+
+                    selectedItem.getCells()[0].setText(title);
+                    selectedItem.getCells()[1].setText(author);
+                    selectedItem.getCells()[2].setText(genre);
+                    selectedItem.getCells()[3].setText(year);
+
+                    this.updateBookDialog.close();
+                }
+            },
+            onDeleteButton: function() {
                 const booksTable = this.getView().byId("booksTable");
                 const selectedItem = booksTable.getSelectedItem();
 
-                selectedItem.getCells()[0].setText(title);
-                selectedItem.getCells()[1].setText(author);
-                selectedItem.getCells()[2].setText(genre);
-                selectedItem.getCells()[3].setText(year);
-
-                this.updateBookDialog.close();
+                if (selectedItem === null)
+                    MessageBox.error("No selected book!")
+                else {
+                    this.deleteBookDialog = sap.ui.xmlfragment("library.view.dialogs.DeleteBook", this);
+                    this.getView().addDependent(this.deleteBookDialog);
+                    this.deleteBookDialog.open();
                 }
+            },
+            onAfterCloseDeleteDialog: function() {
+                this.addBookDialog.destroy();
+            },
+            onCloseDeleteDialog: function() {
+                this.addBookDialog.close();
+            },
+            onDeleteDialog: function() {
+                const booksTable = this.getView().byId("booksTable");
+                const selectedItem = booksTable.getSelectedItem();
+                booksTable.removeItem(selectedItem);
+                this.deleteBookDialog.close();
             }
         });
     });
