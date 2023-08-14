@@ -1,11 +1,11 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
-    "sap/ui/core/Fragment"
+    "sap/m/MessageBox",
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, Fragment) {
+    function (Controller, MessageBox) {
         "use strict";
 
         return Controller.extend("library.controller.Main", {
@@ -65,11 +65,31 @@ sap.ui.define([
                 const genre = sap.ui.getCore().byId("genreInput").getValue();
                 const year = sap.ui.getCore().byId("yearInput").getValue();
 
+                if (title.trim() == "") {
+                    MessageBox.warning("Title field is empty!");
+                    this.emptyFields();
+                }
+                else if (author.trim() == "") {
+                    MessageBox.warning("Author field is empty!");
+                    this.emptyFields();
+                }
+                else if (isNaN(year)){
+                    MessageBox.warning("Invalid year of publication!");
+                    this.emptyFields();
+                }
+                else {
                 const booksTable = this.getView().byId("booksTable");
                 const bookItem = this.addRow(title, author, genre, year);
 
                 booksTable.addItem(bookItem);
                 this.addBookDialog.close();
+                }
+            },
+            emptyFields: function() {
+                sap.ui.getCore().byId("titleInput").setValue("");
+                sap.ui.getCore().byId("authorInput").setValue("");
+                sap.ui.getCore().byId("genreInput").setValue("");
+                sap.ui.getCore().byId("yearInput").setValue("");
             },
             addRow: function(title, author, genre, year) {
                 const cellTitle = new sap.m.Text({text: title});
