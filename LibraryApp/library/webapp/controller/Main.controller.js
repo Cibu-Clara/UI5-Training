@@ -106,32 +106,49 @@ sap.ui.define([
                 
                 return bookItem;
             },
-            onSelectedItem: function(oEvent) {
-                const selectedItem = oEvent.getSource().getSelectedItem();
+            onUpdateButton: function() {
+                const booksTable = this.getView().byId("booksTable");
+                const selectedItem = booksTable.getSelectedItem();
+
+                if (selectedItem === null)
+                    MessageBox.error("No selected book!")
+                else {
+                this.updateBookDialog = sap.ui.xmlfragment("library.view.dialogs.UpdateBook", this);
+                this.getView().addDependent(this.updateBookDialog);
+                this.updateBookDialog.open();
 
                 const title = selectedItem.getCells()[0].getText();
                 const author = selectedItem.getCells()[1].getText();
                 const genre = selectedItem.getCells()[2].getText();
                 const year = selectedItem.getCells()[3].getText();
 
-                this.getView().byId("titleInput").setValue(title);
-                this.getView().byId("authorInput").setValue(author);
-                this.getView().byId("genreInput").setValue(genre);
-                this.getView().byId("yearInput").setValue(year);
+                sap.ui.getCore().byId("titleInput").setValue(title);
+                sap.ui.getCore().byId("authorInput").setValue(author);
+                sap.ui.getCore().byId("genreInput").setValue(genre);
+                sap.ui.getCore().byId("yearInput").setValue(year);
+                }
             },
-            updateBook: function() {
-                const title = this.getView().byId("titleInput").getValue();
-                const author = this.getView().byId("authorInput").getValue();
-                const genre = this.getView().byId("genreInput").getValue();
-                const year = this.getView().byId("yearInput").getValue();
+            onAfterCloseUpdateDialog: function() {
+                this.updateBookDialog.destroy();
+            },
+            onCloseUpdateDialog: function() {
+                this.updateBookDialog.close();
+            },
+            onUpdateDialog: function() {
+                const title = sap.ui.getCore().byId("titleInput").getValue();
+                const author = sap.ui.getCore().byId("authorInput").getValue();
+                const genre = sap.ui.getCore().byId("genreInput").getValue();
+                const year = sap.ui.getCore().byId("yearInput").getValue();
 
                 const booksTable = this.getView().byId("booksTable");
                 const selectedItem = booksTable.getSelectedItem();
 
                 selectedItem.getCells()[0].setText(title);
-                selectedItem.getCells()[1].setText(title);
-                selectedItem.getCells()[2].setText(title);
-                selectedItem.getCells()[3].setText(title);
+                selectedItem.getCells()[1].setText(author);
+                selectedItem.getCells()[2].setText(genre);
+                selectedItem.getCells()[3].setText(year);
+
+                this.updateBookDialog.close();
             }
         });
     });

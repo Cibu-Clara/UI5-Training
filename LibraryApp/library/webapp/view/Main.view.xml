@@ -4,7 +4,7 @@
     xmlns:l="sap.ui.layout">
     <Page id="page" title="{i18n>title}">
         <content>
-            <Table id="booksTable" selectionChange="onSelectedItem" mode="SingleSelect" >
+            <Table id="booksTable" mode="SingleSelect" >
                 <columns>
                     <Column hAlign="Center">
                         <Text text="Title"/>
