@@ -64,26 +64,32 @@ sap.ui.define([
                 const author = sap.ui.getCore().byId("authorInput").getValue();
                 const genre = sap.ui.getCore().byId("genreInput").getValue();
                 const year = sap.ui.getCore().byId("yearInput").getValue();
+                
+                const isValid = this.validate(title, author, genre, year);
 
+                if (isValid === true) {
+                    const booksTable = this.getView().byId("booksTable");
+                    const bookItem = this.addRow(title, author, genre, year);
+
+                    booksTable.addItem(bookItem);
+                    this.addBookDialog.close();
+                }
+                else this.emptyFields();
+            },
+            validate: function(title, author, genre, year) {
                 if (title.trim() == "") {
                     MessageBox.warning("Title field is empty!");
-                    this.emptyFields();
+                    return false;
                 }
                 else if (author.trim() == "") {
                     MessageBox.warning("Author field is empty!");
-                    this.emptyFields();
+                    return false;
                 }
                 else if (isNaN(year)){
                     MessageBox.warning("Invalid year of publication!");
-                    this.emptyFields();
+                    return false;
                 }
-                else {
-                const booksTable = this.getView().byId("booksTable");
-                const bookItem = this.addRow(title, author, genre, year);
-
-                booksTable.addItem(bookItem);
-                this.addBookDialog.close();
-                }
+                else return true;
             },
             emptyFields: function() {
                 sap.ui.getCore().byId("titleInput").setValue("");
@@ -139,7 +145,10 @@ sap.ui.define([
                 const author = sap.ui.getCore().byId("authorInput").getValue();
                 const genre = sap.ui.getCore().byId("genreInput").getValue();
                 const year = sap.ui.getCore().byId("yearInput").getValue();
+                
+                const isValid = this.validate(title, author, genre, year);
 
+                if (isValid === true) {
                 const booksTable = this.getView().byId("booksTable");
                 const selectedItem = booksTable.getSelectedItem();
 
@@ -149,6 +158,7 @@ sap.ui.define([
                 selectedItem.getCells()[3].setText(year);
 
                 this.updateBookDialog.close();
+                }
             }
         });
     });
