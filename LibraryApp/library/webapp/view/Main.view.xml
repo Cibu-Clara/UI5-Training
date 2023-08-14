@@ -20,20 +20,10 @@
                     </Column>
                 </columns>
             </Table>
-	        <l:VerticalLayout class="sapUiContentPadding" width="100%">
-                <Label text="Title" labelFor="titleInput" design="Bold" />
-                    <Input id="titleInput" required="true" />
-                <Label text="Author" labelFor="authorInput" design="Bold" />
-                    <Input id="authorInput" required="true" />
-                <Label text="Genre" labelFor="genreInput" design="Bold" />
-                    <Input id="genreInput" required="true" />
-                <Label text="Year of Publication" labelFor="yearInput" design="Bold" />
-                    <Input id="yearInput" required="true" />
-                <l:HorizontalLayout class="sapUiContentPadding"> 
-                    <Button text="Add Book" press="addBook"></Button>
-                    <Button text="Update Book" press="updateBook"></Button>
-                </l:HorizontalLayout>
-            </l:VerticalLayout>
+            <l:HorizontalLayout class="sapUiContentPadding"> 
+                    <Button text="Add Book" press="onAddButton"></Button>
+                    <Button text="Update Book" press="onUpdateButton"></Button>
+            </l:HorizontalLayout>
         </content>
     </Page>
 </mvc:View>

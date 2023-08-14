@@ -1,0 +1,22 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" >
+   <Dialog id="addBook" title="Add Book" contentWidth="550px" contentHeight="230px" afterClose="onAfterCloseAddDialog">
+        <content>
+        <Panel>
+        <Label text="Title" labelFor="titleInput" design="Bold" />
+            <Input id="titleInput" required="true" />
+        <Label text="Author" labelFor="authorInput" design="Bold" />
+            <Input id="authorInput" required="true" />
+        <Label text="Genre" labelFor="genreInput" design="Bold" />
+            <Input id="genreInput" required="true" />
+        <Label text="Year of Publication" labelFor="yearInput" design="Bold" />
+            <Input id="yearInput" required="true" />
+        </Panel>
+        </content>
+        <beginButton>
+            <Button text="Add" type="Emphasized" press="onAddDialog"/>
+        </beginButton>
+        <endButton>
+            <Button text="Close" press="onCloseAddDialog"/>
+        </endButton>
+   </Dialog>
+</core:FragmentDefinition>

@@ -1,10 +1,11 @@
 sap.ui.define([
-    "sap/ui/core/mvc/Controller"
+    "sap/ui/core/mvc/Controller",
+    "sap/ui/core/Fragment"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller) {
+    function (Controller, Fragment) {
         "use strict";
 
         return Controller.extend("library.controller.Main", {
@@ -47,21 +48,28 @@ sap.ui.define([
                     booksTable.addItem(bookItem);
                 })
             },
-            addBook: function() {
-                const title = this.getView().byId("titleInput").getValue();
-                const author = this.getView().byId("authorInput").getValue();
-                const genre = this.getView().byId("genreInput").getValue();
-                const year = this.getView().byId("yearInput").getValue();
+            onAddButton: function() {
+                this.addBookDialog = sap.ui.xmlfragment("library.view.dialogs.AddBook", this);
+                this.getView().addDependent(this.addBookDialog);
+                this.addBookDialog.open();
+            },
+            onAfterCloseAddDialog: function() {
+                this.addBookDialog.destroy();
+            },
+            onCloseAddDialog: function() {
+                this.addBookDialog.close();
+            },
+            onAddDialog: function() {
+                const title = sap.ui.getCore().byId("titleInput").getValue();
+                const author = sap.ui.getCore().byId("authorInput").getValue();
+                const genre = sap.ui.getCore().byId("genreInput").getValue();
+                const year = sap.ui.getCore().byId("yearInput").getValue();
 
                 const booksTable = this.getView().byId("booksTable");
                 const bookItem = this.addRow(title, author, genre, year);
 
                 booksTable.addItem(bookItem);
-
-                this.getView().byId("titleInput").setValue("");
-                this.getView().byId("authorInput").setValue("");
-                this.getView().byId("genreInput").setValue("");
-                this.getView().byId("yearInput").setValue("");
+                this.addBookDialog.close();
             },
             addRow: function(title, author, genre, year) {
                 const cellTitle = new sap.m.Text({text: title});
