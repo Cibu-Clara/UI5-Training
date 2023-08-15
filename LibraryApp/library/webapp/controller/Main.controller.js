@@ -43,13 +43,18 @@ sap.ui.define([
             onAddDialog: function() {
                 const titleInput = sap.ui.getCore().byId("titleInput");
                 const authorInput = sap.ui.getCore().byId("authorInput");
+                const genreInput = sap.ui.getCore().byId("genreInput");
                 const yearInput = sap.ui.getCore().byId("yearInput");
 
                 const title = titleInput.getValue();
                 const author = authorInput.getValue();
-                const genre = sap.ui.getCore().byId("genreInput").getValue();
+                const genre = genreInput.getValue();
                 const year = yearInput.getValue();
                 
+                titleInput.setValueState(sap.ui.core.ValueState.None);
+                authorInput.setValueState(sap.ui.core.ValueState.None);
+                yearInput.setValueState(sap.ui.core.ValueState.None);
+
                 let itExists = false;
 
                 this.arrayOfBooks.forEach(b => {
@@ -141,12 +146,21 @@ sap.ui.define([
                 this.updateBookDialog.close();
             },
             onUpdateDialog: function() {
-                const title = sap.ui.getCore().byId("titleInput").getValue();
-                const author = sap.ui.getCore().byId("authorInput").getValue();
-                const genre = sap.ui.getCore().byId("genreInput").getValue();
-                const year = sap.ui.getCore().byId("yearInput").getValue();
+                const titleInput = sap.ui.getCore().byId("titleInput");
+                const authorInput = sap.ui.getCore().byId("authorInput");
+                const genreInput = sap.ui.getCore().byId("genreInput");
+                const yearInput = sap.ui.getCore().byId("yearInput");
+
+                const title = titleInput.getValue();
+                const author = authorInput.getValue();
+                const genre = genreInput.getValue();
+                const year = yearInput.getValue();
+
+                titleInput.setValueState(sap.ui.core.ValueState.None);
+                authorInput.setValueState(sap.ui.core.ValueState.None);
+                yearInput.setValueState(sap.ui.core.ValueState.None);
                 
-                const isValid = this.validateData(title, author, year);
+                const isValid = this.validateData(titleInput, authorInput, yearInput);
 
                 if (isValid === true) {
                     const booksTable = this.getView().byId("booksTable");
