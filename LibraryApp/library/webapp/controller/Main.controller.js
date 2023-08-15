@@ -1,48 +1,28 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/MessageBox",
+    "jquery.sap.storage"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, MessageBox) {
+    function (Controller, MessageBox, jQuery) {
         "use strict";
 
         return Controller.extend("library.controller.Main", {
             
-            arrayOfBooks : [{
-                title: "Harry Potter",
-                author: "J.K. Rowling",
-                genre: "Fantasy",
-                year: "1997"
-            },
-            {
-                title: "The Great Gatsby",
-                author: "F. Scott Fitzgerald",
-                genre: "Tragedy",
-                year: "1925"
-            }, 
-            {
-                title: "The Lord of the Rings",
-                author: "J.R.R. Tolkien",
-                genre: "Fantasy",
-                year: "1954"
-            }, 
-            {
-                title: "The Notebook",
-                author: "Nicholas Sparks",
-                genre: "Romance",
-                year: "1996"
-            },
-            {
-                title: "The Little Prince",
-                author: "Antoine de Saint-Exupéry",
-                genre: "Fantasy",
-                year: "1943"
-            }],
+            arrayOfBooks : [],
+            localStorageKey : "LOCAL_STORAGE_KEY",
+		    booksLocalStorage : jQuery.sap.storage(jQuery.sap.storage.Type.local),
 
+            getBooksFromLocalStorage: function () {
+                let books = this.booksLocalStorage.get(this.localStorageKey);
+                if (books != null && books != "")
+                    this.arrayOfBooks = books;
+              },
             onInit: function () {
                 const booksTable = this.getView().byId("booksTable");
+                this.getBooksFromLocalStorage();
 
                 this.arrayOfBooks.forEach(b => {
                     const bookItem = this.addRow(b.title, b.author, b.genre, b.year)
@@ -69,10 +49,21 @@ sap.ui.define([
                 const isValid = this.validateData(title, author, year);
 
                 if (isValid === true) {
+                    const newBook = {
+                        title: title,
+                        author: author,
+                        genre: genre,
+                        year: year
+                    };
+
+                    let books = this.booksLocalStorage.get(this.localStorageKey);
+                    books.push(newBook);
+                    this.booksLocalStorage.put(this.localStorageKey, books);
+
                     const booksTable = this.getView().byId("booksTable");
                     const bookItem = this.addRow(title, author, genre, year);
-
                     booksTable.addItem(bookItem);
+
                     this.addBookDialog.close();
                 }
                 else this.emptyFields();
@@ -153,6 +144,17 @@ sap.ui.define([
                     const booksTable = this.getView().byId("booksTable");
                     const selectedItem = booksTable.getSelectedItem();
 
+                    let books = this.booksLocalStorage.get(this.localStorageKey);
+                    const index = books.findIndex(book => book.title === selectedItem.getCells()[0].getText()
+                    && book.author === selected.getCells()[1].getText());
+                    books[index] = {
+                        title: title,            
+                        author: author,           
+                        genre: genre,            
+                        year: year,           
+                      };
+                    this.booksLocalStorage.put(this.localStorageKey, books);
+
                     selectedItem.getCells()[0].setText(title);
                     selectedItem.getCells()[1].setText(author);
                     selectedItem.getCells()[2].setText(genre);
@@ -182,6 +184,11 @@ sap.ui.define([
             onDeleteDialog: function() {
                 const booksTable = this.getView().byId("booksTable");
                 const selectedItem = booksTable.getSelectedItem();
+
+                let books = this.booksLocalStorage.get(this.localStorageKey);
+                books.pop(selectedItem);
+                this.booksLocalStorage.put(this.localStorageKey, books);
+
                 booksTable.removeItem(selectedItem);
                 this.deleteBookDialog.close();
             }
