@@ -19,7 +19,7 @@ sap.ui.define([
                 let books = this.booksLocalStorage.get(this.localStorageKey);
                 if (books != null && books != "")
                     this.arrayOfBooks = books;
-              },
+            },
             onInit: function () {
                 const booksTable = this.getView().byId("booksTable");
                 this.getBooksFromLocalStorage();
@@ -146,7 +146,7 @@ sap.ui.define([
 
                     let books = this.booksLocalStorage.get(this.localStorageKey);
                     const index = books.findIndex(book => book.title === selectedItem.getCells()[0].getText()
-                    && book.author === selected.getCells()[1].getText());
+                    && book.author === selectedItem.getCells()[1].getText());
                     books[index] = {
                         title: title,            
                         author: author,           
@@ -186,7 +186,9 @@ sap.ui.define([
                 const selectedItem = booksTable.getSelectedItem();
 
                 let books = this.booksLocalStorage.get(this.localStorageKey);
-                books.pop(selectedItem);
+                const index = books.findIndex(book => book.title === selectedItem.getCells()[0].getText()
+                    && book.author === selectedItem.getCells()[1].getText());
+                books.splice(index, 1);
                 this.booksLocalStorage.put(this.localStorageKey, books);
 
                 booksTable.removeItem(selectedItem);
