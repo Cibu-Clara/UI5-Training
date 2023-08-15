@@ -41,10 +41,14 @@ sap.ui.define([
                 this.addBookDialog.close();
             },
             onAddDialog: function() {
-                const title = sap.ui.getCore().byId("titleInput").getValue();
-                const author = sap.ui.getCore().byId("authorInput").getValue();
+                const titleInput = sap.ui.getCore().byId("titleInput");
+                const authorInput = sap.ui.getCore().byId("authorInput");
+                const yearInput = sap.ui.getCore().byId("yearInput");
+
+                const title = titleInput.getValue();
+                const author = authorInput.getValue();
                 const genre = sap.ui.getCore().byId("genreInput").getValue();
-                const year = sap.ui.getCore().byId("yearInput").getValue();
+                const year = yearInput.getValue();
                 
                 let itExists = false;
 
@@ -55,7 +59,7 @@ sap.ui.define([
                     }
                 })
 
-                const isValid = this.validateData(title, author, year);
+                const isValid = this.validateData(titleInput, authorInput, yearInput);
 
                 if (isValid === true && itExists === false) {
                     const newBook = {
@@ -76,20 +80,22 @@ sap.ui.define([
                     this.addBookDialog.close();
                 }
             },
-            validateData: function(title, author, year) {
-                if (title.trim() === "") {
-                    MessageBox.warning("Title field is empty!");
-                    return false;
+            validateData: function(titleInput, authorInput, yearInput) {
+                if (titleInput.getValue().trim() !== "" && authorInput.getValue().trim() !== "" && isNaN(yearInput.getValue()) === false)
+                    return true;
+                if (titleInput.getValue().trim() === "") {
+                    titleInput.setValueState("Error");
+                    titleInput.setValueStateText("Title field is empty!");
                 }
-                else if (author.trim() === "") {
-                    MessageBox.warning("Author field is empty!");
-                    return false;
+                if (authorInput.getValue().trim() === "") {
+                    authorInput.setValueState("Error");
+                    authorInput.setValueStateText("Author field is empty!");
                 }
-                else if (isNaN(year)){
-                    MessageBox.warning("Invalid year of publication!");
-                    return false;
+                if (isNaN(yearInput.getValue())){
+                    yearInput.setValueState("Error");
+                    yearInput.setValueStateText("Invalid year of publication!")
                 }
-                else return true;
+                    return false;
             },
             addRow: function(title, author, genre, year) {
                 const cellTitle = new sap.m.Text({text: title});
@@ -111,7 +117,7 @@ sap.ui.define([
                 const selectedItem = booksTable.getSelectedItem();
 
                 if (selectedItem === null)
-                    MessageBox.error("No selected book!")
+                    MessageBox.warning("No selected book!")
                 else {
                     this.updateBookDialog = sap.ui.xmlfragment("library.view.dialogs.UpdateBook", this);
                     this.getView().addDependent(this.updateBookDialog);
@@ -170,7 +176,7 @@ sap.ui.define([
                 const selectedItem = booksTable.getSelectedItem();
 
                 if (selectedItem === null)
-                    MessageBox.error("No selected book!")
+                    MessageBox.warning("No selected book!")
                 else {
                     this.deleteBookDialog = sap.ui.xmlfragment("library.view.dialogs.DeleteBook", this);
                     this.getView().addDependent(this.deleteBookDialog);
