@@ -7,9 +7,9 @@
         <Label text="Author" labelFor="authorInput" design="Bold" />
             <Input id="authorInput" required="true" />
         <Label text="Genre" labelFor="genreInput" design="Bold" />
-            <Input id="genreInput" required="true" />
+            <Input id="genreInput"/>
         <Label text="Year of Publication" labelFor="yearInput" design="Bold" />
-            <Input id="yearInput" required="true" />
+            <Input id="yearInput"/>
         </Panel>
         </content>
         <beginButton>

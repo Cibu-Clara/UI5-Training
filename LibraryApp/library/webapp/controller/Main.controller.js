@@ -9,41 +9,42 @@ sap.ui.define([
         "use strict";
 
         return Controller.extend("library.controller.Main", {
+            
+            arrayOfBooks : [{
+                title: "Harry Potter",
+                author: "J.K. Rowling",
+                genre: "Fantasy",
+                year: "1997"
+            },
+            {
+                title: "The Great Gatsby",
+                author: "F. Scott Fitzgerald",
+                genre: "Tragedy",
+                year: "1925"
+            }, 
+            {
+                title: "The Lord of the Rings",
+                author: "J.R.R. Tolkien",
+                genre: "Fantasy",
+                year: "1954"
+            }, 
+            {
+                title: "The Notebook",
+                author: "Nicholas Sparks",
+                genre: "Romance",
+                year: "1996"
+            },
+            {
+                title: "The Little Prince",
+                author: "Antoine de Saint-Exupéry",
+                genre: "Fantasy",
+                year: "1943"
+            }],
+
             onInit: function () {
                 const booksTable = this.getView().byId("booksTable");
 
-                let arrayOfBooks = [{
-                    title: "Harry Potter",
-                    author: "J.K. Rowling",
-                    genre: "Fantasy",
-                    year: "1997"
-                },
-                {
-                    title: "The Great Gatsby",
-                    author: "F. Scott Fitzgerald",
-                    genre: "Tragedy",
-                    year: "1925"
-                }, 
-                {
-                    title: "The Lord of the Rings",
-                    author: "J.R.R. Tolkien",
-                    genre: "Fantasy",
-                    year: "1954"
-                }, 
-                {
-                    title: "The Notebook",
-                    author: "Nicholas Sparks",
-                    genre: "Romance",
-                    year: "1996"
-                },
-                {
-                    title: "The Little Prince",
-                    author: "Antoine de Saint-Exupéry",
-                    genre: "Fantasy",
-                    year: "1943"
-                }];
-
-                arrayOfBooks.forEach(b => {
+                this.arrayOfBooks.forEach(b => {
                     const bookItem = this.addRow(b.title, b.author, b.genre, b.year)
                     booksTable.addItem(bookItem);
                 })
@@ -65,7 +66,7 @@ sap.ui.define([
                 const genre = sap.ui.getCore().byId("genreInput").getValue();
                 const year = sap.ui.getCore().byId("yearInput").getValue();
                 
-                const isValid = this.validate(title, author, genre, year);
+                const isValid = this.validateData(title, author, year);
 
                 if (isValid === true) {
                     const booksTable = this.getView().byId("booksTable");
@@ -76,7 +77,7 @@ sap.ui.define([
                 }
                 else this.emptyFields();
             },
-            validate: function(title, author, genre, year) {
+            validateData: function(title, author, year) {
                 if (title.trim() == "") {
                     MessageBox.warning("Title field is empty!");
                     return false;
@@ -146,7 +147,7 @@ sap.ui.define([
                 const genre = sap.ui.getCore().byId("genreInput").getValue();
                 const year = sap.ui.getCore().byId("yearInput").getValue();
                 
-                const isValid = this.validate(title, author, genre, year);
+                const isValid = this.validateData(title, author, year);
 
                 if (isValid === true) {
                     const booksTable = this.getView().byId("booksTable");
