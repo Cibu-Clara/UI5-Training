@@ -46,9 +46,18 @@ sap.ui.define([
                 const genre = sap.ui.getCore().byId("genreInput").getValue();
                 const year = sap.ui.getCore().byId("yearInput").getValue();
                 
+                let itExists = false;
+
+                this.arrayOfBooks.forEach(b => {
+                    if (b.title === title && b.author === author){
+                        MessageBox.warning("Book already exists!");
+                        itExists = true;
+                    }
+                })
+
                 const isValid = this.validateData(title, author, year);
 
-                if (isValid === true) {
+                if (isValid === true && itExists === false) {
                     const newBook = {
                         title: title,
                         author: author,
@@ -66,14 +75,13 @@ sap.ui.define([
 
                     this.addBookDialog.close();
                 }
-                else this.emptyFields();
             },
             validateData: function(title, author, year) {
-                if (title.trim() == "") {
+                if (title.trim() === "") {
                     MessageBox.warning("Title field is empty!");
                     return false;
                 }
-                else if (author.trim() == "") {
+                else if (author.trim() === "") {
                     MessageBox.warning("Author field is empty!");
                     return false;
                 }
@@ -82,12 +90,6 @@ sap.ui.define([
                     return false;
                 }
                 else return true;
-            },
-            emptyFields: function() {
-                sap.ui.getCore().byId("titleInput").setValue("");
-                sap.ui.getCore().byId("authorInput").setValue("");
-                sap.ui.getCore().byId("genreInput").setValue("");
-                sap.ui.getCore().byId("yearInput").setValue("");
             },
             addRow: function(title, author, genre, year) {
                 const cellTitle = new sap.m.Text({text: title});
