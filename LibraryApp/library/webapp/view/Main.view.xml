@@ -24,6 +24,7 @@
                     <Button text="{i18n>Add-Book}" press="onAddButton"></Button>
                     <Button text="{i18n>Update-Book}" press="onUpdateButton"></Button>
                     <Button text="{i18n>Delete-Book}" press="onDeleteButton"></Button>
+                    <Button text="{i18n>View-Details}" press="onViewButton"></Button>
             </l:HorizontalLayout>
         </content>
     </Page>

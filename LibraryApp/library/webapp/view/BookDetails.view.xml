@@ -1,0 +1,11 @@
+<mvc:View controllerName="library.controller.BookDetails"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout">
+    <Page id="bookDetailsPage" title="{i18n>title}">
+        <content>
+            <Text text="Details about a book">
+            </Text>
+        </content>
+    </Page>
+</mvc:View>

@@ -2,12 +2,13 @@ sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/MessageBox",
     "jquery.sap.storage",
-    "sap/ui/model/resource/ResourceModel"
+    "sap/ui/model/resource/ResourceModel",
+    "sap/ui/core/UIComponent"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, MessageBox, jQuery, ResourceModel) {
+    function (Controller, MessageBox, jQuery, ResourceModel, UIComponent) {
         "use strict";
 
         return Controller.extend("library.controller.Main", {
@@ -226,6 +227,18 @@ sap.ui.define([
 
                 booksTable.removeItem(selectedItem);
                 this.deleteBookDialog.close();
+            },
+            getRouter: function() {
+                return UIComponent.getRouterFor(this);
+            },
+            onViewButton: function() {
+                const booksTable = this.getView().byId("booksTable");
+                const selectedItem = booksTable.getSelectedItem();
+                if (selectedItem === null)
+                    MessageBox.warning(this.getView().getModel("i18n").getResourceBundle().getText("noSelectedBook"));
+                else {
+                    this.getRouter().navTo("bookDetails");
+                }
             }
         });
     });

@@ -83,6 +83,10 @@
           "target": [
             "TargetMain"
           ]
+        }, {
+          "name": "bookDetails",
+          "pattern": "details",
+          "target": "details"
         }
       ],
       "targets": {
@@ -91,7 +95,16 @@
           "transition": "slide",
           "clearControlAggregation": false,
           "viewId": "Main",
-          "viewName": "Main"
+          "viewName": "Main",
+          "level": 1
+        },
+        "details": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "bookDetails",
+          "viewName": "BookDetails",
+          "level": 2
         }
       }
     },
