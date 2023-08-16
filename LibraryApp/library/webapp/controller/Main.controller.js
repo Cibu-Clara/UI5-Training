@@ -1,26 +1,37 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/MessageBox",
-    "jquery.sap.storage"
+    "jquery.sap.storage",
+    "sap/ui/model/resource/ResourceModel"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, MessageBox, jQuery) {
+    function (Controller, MessageBox, jQuery, ResourceModel) {
         "use strict";
 
         return Controller.extend("library.controller.Main", {
             
             arrayOfBooks : [],
-            localStorageKey : "LOCAL_STORAGE_KEY",
 		    booksLocalStorage : jQuery.sap.storage(jQuery.sap.storage.Type.local),
+            booksArrayKey : "LOCAL_STORAGE_KEY_BOOKS_ARRAY",
 
             getBooksFromLocalStorage: function () {
-                let books = this.booksLocalStorage.get(this.localStorageKey);
-                if (books != null && books != "")
+                let books = this.booksLocalStorage.get(this.booksArrayKey);
+                if (books !== null && books !== ""){
                     this.arrayOfBooks = books;
+                }
+                else {
+                    this.booksLocalStorage.put(this.booksArrayKey, []);
+                }
             },
             onInit: function () {
+                const oView = this.getView();
+                const oResourceModel = new ResourceModel({
+                bundleName: "library.i18n.i18n" 
+                });
+                oView.setModel(oResourceModel, "i18n");
+
                 const booksTable = this.getView().byId("booksTable");
                 this.getBooksFromLocalStorage();
 
@@ -59,14 +70,14 @@ sap.ui.define([
 
                 this.arrayOfBooks.forEach(b => {
                     if (b.title === title && b.author === author){
-                        MessageBox.warning("Book already exists!");
+                        MessageBox.warning(this.getView().getModel("i18n").getResourceBundle().getText("bookAlreadyExists"));
                         itExists = true;
                     }
                 })
 
                 const isValid = this.validateData(titleInput, authorInput, yearInput);
 
-                if (isValid === true && itExists === false) {
+                if (isValid && ! itExists) {
                     const newBook = {
                         title: title,
                         author: author,
@@ -74,9 +85,9 @@ sap.ui.define([
                         year: year
                     };
 
-                    let books = this.booksLocalStorage.get(this.localStorageKey);
+                    let books = this.booksLocalStorage.get(this.booksArrayKey);
                     books.push(newBook);
-                    this.booksLocalStorage.put(this.localStorageKey, books);
+                    this.booksLocalStorage.put(this.booksArrayKey, books);
 
                     const booksTable = this.getView().byId("booksTable");
                     const bookItem = this.addRow(title, author, genre, year);
@@ -86,19 +97,19 @@ sap.ui.define([
                 }
             },
             validateData: function(titleInput, authorInput, yearInput) {
-                if (titleInput.getValue().trim() !== "" && authorInput.getValue().trim() !== "" && isNaN(yearInput.getValue()) === false)
+                if (titleInput.getValue().trim() !== "" && authorInput.getValue().trim() !== "" && !isNaN(yearInput.getValue()))
                     return true;
                 if (titleInput.getValue().trim() === "") {
                     titleInput.setValueState("Error");
-                    titleInput.setValueStateText("Title field is empty!");
+                    titleInput.setValueStateText(this.getView().getModel("i18n").getResourceBundle().getText("titleFieldEmpty"));
                 }
                 if (authorInput.getValue().trim() === "") {
                     authorInput.setValueState("Error");
-                    authorInput.setValueStateText("Author field is empty!");
+                    authorInput.setValueStateText(this.getView().getModel("i18n").getResourceBundle().getText("authorFieldEmpty"));
                 }
                 if (isNaN(yearInput.getValue())){
                     yearInput.setValueState("Error");
-                    yearInput.setValueStateText("Invalid year of publication!")
+                    yearInput.setValueStateText(this.getView().getModel("i18n").getResourceBundle().getText("invalidYear"));
                 }
                     return false;
             },
@@ -122,7 +133,7 @@ sap.ui.define([
                 const selectedItem = booksTable.getSelectedItem();
 
                 if (selectedItem === null)
-                    MessageBox.warning("No selected book!")
+                MessageBox.warning(this.getView().getModel("i18n").getResourceBundle().getText("noSelectedBook"));
                 else {
                     this.updateBookDialog = sap.ui.xmlfragment("library.view.dialogs.UpdateBook", this);
                     this.getView().addDependent(this.updateBookDialog);
@@ -162,11 +173,11 @@ sap.ui.define([
                 
                 const isValid = this.validateData(titleInput, authorInput, yearInput);
 
-                if (isValid === true) {
+                if (isValid) {
                     const booksTable = this.getView().byId("booksTable");
                     const selectedItem = booksTable.getSelectedItem();
 
-                    let books = this.booksLocalStorage.get(this.localStorageKey);
+                    let books = this.booksLocalStorage.get(this.booksArrayKey);
                     const index = books.findIndex(book => book.title === selectedItem.getCells()[0].getText()
                     && book.author === selectedItem.getCells()[1].getText());
                     books[index] = {
@@ -175,7 +186,7 @@ sap.ui.define([
                         genre: genre,            
                         year: year,           
                       };
-                    this.booksLocalStorage.put(this.localStorageKey, books);
+                    this.booksLocalStorage.put(this.booksArrayKey, books);
 
                     selectedItem.getCells()[0].setText(title);
                     selectedItem.getCells()[1].setText(author);
@@ -190,7 +201,7 @@ sap.ui.define([
                 const selectedItem = booksTable.getSelectedItem();
 
                 if (selectedItem === null)
-                    MessageBox.warning("No selected book!")
+                MessageBox.warning(this.getView().getModel("i18n").getResourceBundle().getText("noSelectedBook"));
                 else {
                     this.deleteBookDialog = sap.ui.xmlfragment("library.view.dialogs.DeleteBook", this);
                     this.getView().addDependent(this.deleteBookDialog);
@@ -198,20 +209,20 @@ sap.ui.define([
                 }
             },
             onAfterCloseDeleteDialog: function() {
-                this.addBookDialog.destroy();
+                this.deleteBookDialog.destroy();
             },
             onCloseDeleteDialog: function() {
-                this.addBookDialog.close();
+                this.deleteBookDialog.close();
             },
             onDeleteDialog: function() {
                 const booksTable = this.getView().byId("booksTable");
                 const selectedItem = booksTable.getSelectedItem();
 
-                let books = this.booksLocalStorage.get(this.localStorageKey);
+                let books = this.booksLocalStorage.get(this.booksArrayKey);
                 const index = books.findIndex(book => book.title === selectedItem.getCells()[0].getText()
                     && book.author === selectedItem.getCells()[1].getText());
                 books.splice(index, 1);
-                this.booksLocalStorage.put(this.localStorageKey, books);
+                this.booksLocalStorage.put(this.booksArrayKey, books);
 
                 booksTable.removeItem(selectedItem);
                 this.deleteBookDialog.close();

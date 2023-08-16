@@ -7,23 +7,23 @@
             <Table id="booksTable" mode="SingleSelect" >
                 <columns>
                     <Column hAlign="Center">
-                        <Text text="Title"/>
+                        <Text text="{i18n>Title}"/>
                     </Column>
                     <Column hAlign="Center">
-                        <Text text="Author"/>
+                        <Text text="{i18n>Author}"/>
                     </Column>
                     <Column hAlign="Center">
-                        <Text text="Genre"/>
+                        <Text text="{i18n>Genre}"/>
                     </Column>
                     <Column hAlign="Center">
-                        <Text text="Year of Publication"/>
+                        <Text text="{i18n>Year}"/>
                     </Column>
                 </columns>
             </Table>
             <l:HorizontalLayout class="sapUiContentPadding"> 
-                    <Button text="Add Book" press="onAddButton"></Button>
-                    <Button text="Update Book" press="onUpdateButton"></Button>
-                    <Button text="Delete Book" press="onDeleteButton"></Button>
+                    <Button text="{i18n>Add-Book}" press="onAddButton"></Button>
+                    <Button text="{i18n>Update-Book}" press="onUpdateButton"></Button>
+                    <Button text="{i18n>Delete-Book}" press="onDeleteButton"></Button>
             </l:HorizontalLayout>
         </content>
     </Page>
