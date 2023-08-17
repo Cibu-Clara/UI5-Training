@@ -12,7 +12,7 @@ sap.ui.define([
             this.getOwnerComponent()
                 .getRouter()
                 .getRoute("bookDetails")
-                .attachPatternMatched(this.myFunction, this);
+                .attachPatternMatched(this.getBookByID, this);
         },
         getBookByID: function(oEvent) {
             const bookId = JSON.parse(oEvent.getParameter("arguments").bookId);
@@ -25,7 +25,8 @@ sap.ui.define([
                         title: b.title,
                         author: b.author,
                         genre: b.genre,
-                        year: b.year
+                        year: b.year,
+                        cover: this.getBookCover(b.title)
                     });
                     this.getView().setModel(oModel, "bookModel");
                 }
@@ -36,6 +37,18 @@ sap.ui.define([
         },
 		onNavBack: function () {
 			this.getRouter().navTo("RouteMain");
-		}
+		},
+        getBookCover: async function(title) {
+            try {
+                const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${title}&orderBy=relevance&printType=BOOKS`);
+                const bookData = await response.json();
+                
+                const image = bookData.items[0]?.volumeInfo?.imageLinks?.smallThumbnail;
+                return image !== null ? image : "library/images/not-available.png";
+            } catch (error) {
+                console.error("Error fetching book cover:", error);
+                return "library/images/not-available.png";
+            }
+        }
     });
 });
