@@ -15,7 +15,9 @@
                 <content>
                     <FlexBox direction="Row" alignItems="Start">
                         <items>
-                            <Image src="{bookModel>/cover}" width="{/imageWidth}" height="225px"/>
+                            <Image id="bookCover" 
+							src="{= ${bookModel>/cover} === '/images/not-available.png' ? '/images/not-available.png' : ${bookModel>/cover} }" 
+							width="{/imageWidth}" height="220px"/>
                             <f:SimpleForm
                                 layout="ResponsiveGridLayout"
                                 labelSpanL="3" labelSpanM="3" emptySpanL="4" emptySpanM="4"

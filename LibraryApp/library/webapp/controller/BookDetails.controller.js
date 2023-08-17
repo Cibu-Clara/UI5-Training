@@ -28,6 +28,7 @@ sap.ui.define([
                         year: b.year,
                         cover: this.getBookCover(b.title)
                     });
+                    console.log(this.getBookCover(b.title));
                     this.getView().setModel(oModel, "bookModel");
                 }
             });
@@ -44,10 +45,10 @@ sap.ui.define([
                 const bookData = await response.json();
                 
                 const image = bookData.items[0]?.volumeInfo?.imageLinks?.smallThumbnail;
-                return image !== null ? image : "library/images/not-available.png";
+                return image !== undefined ? image : "/images/not-available.png";
             } catch (error) {
                 console.error("Error fetching book cover:", error);
-                return "library/images/not-available.png";
+                return "/images/not-available.png";
             }
         }
     });
