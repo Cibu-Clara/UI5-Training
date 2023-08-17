@@ -85,7 +85,7 @@
           ]
         }, {
           "name": "bookDetails",
-          "pattern": "details",
+          "pattern": "details/{bookId}",
           "target": "details"
         }
       ],

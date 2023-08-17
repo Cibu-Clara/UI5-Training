@@ -1,7 +1,7 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" >
    <Dialog title="{i18n>Confirmation}" afterClose="onAfterCloseDeleteDialog">
         <Panel>
-            <Text text="{i18n>Question1}"/>
+            <Text text="{i18n>Question}"/>
         </Panel>
         <beginButton>
             <Button text="{i18n>Yes}" type="Emphasized" press="onDeleteDialog"/>

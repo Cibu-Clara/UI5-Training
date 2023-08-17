@@ -14,8 +14,11 @@ sap.ui.define([
         return Controller.extend("library.controller.Main", {
             
             arrayOfBooks : [],
+            cnt: 0,
 		    booksLocalStorage : jQuery.sap.storage(jQuery.sap.storage.Type.local),
             booksArrayKey : "LOCAL_STORAGE_KEY_BOOKS_ARRAY",
+            cntLocalStorage : jQuery.sap.storage(jQuery.sap.storage.Type.local),
+            cntKey : "LOCAL_STORAGE_KEY_CNT",
 
             getBooksFromLocalStorage: function () {
                 let books = this.booksLocalStorage.get(this.booksArrayKey);
@@ -26,6 +29,15 @@ sap.ui.define([
                     this.booksLocalStorage.put(this.booksArrayKey, []);
                 }
             },
+            getCntFromLocalStorage: function() {
+                let cnt = this.cntLocalStorage.get(this.cntKey);
+                if (cnt !== null && cnt !== "") {
+                    this.cnt = cnt;
+                }
+                else {
+                    this.cntLocalStorage.put(this.cntKey, 0);
+                } 
+            },
             onInit: function () {
                 const oView = this.getView();
                 const oResourceModel = new ResourceModel({
@@ -35,6 +47,7 @@ sap.ui.define([
 
                 const booksTable = this.getView().byId("booksTable");
                 this.getBooksFromLocalStorage();
+                this.getCntFromLocalStorage();
 
                 this.arrayOfBooks.forEach(b => {
                     const bookItem = this.addRow(b.title, b.author, b.genre, b.year)
@@ -79,16 +92,18 @@ sap.ui.define([
                 const isValid = this.validateData(titleInput, authorInput, yearInput);
 
                 if (isValid && ! itExists) {
+                    this.cnt++;
                     const newBook = {
+                        id: this.cnt,
                         title: title,
                         author: author,
                         genre: genre,
                         year: year
                     };
 
-                    let books = this.booksLocalStorage.get(this.booksArrayKey);
-                    books.push(newBook);
-                    this.booksLocalStorage.put(this.booksArrayKey, books);
+                    this.arrayOfBooks.push(newBook);
+                    this.booksLocalStorage.put(this.booksArrayKey, this.arrayOfBooks);
+                    this.cntLocalStorage.put(this.cntKey, this.cnt);
 
                     const booksTable = this.getView().byId("booksTable");
                     const bookItem = this.addRow(title, author, genre, year);
@@ -178,16 +193,15 @@ sap.ui.define([
                     const booksTable = this.getView().byId("booksTable");
                     const selectedItem = booksTable.getSelectedItem();
 
-                    let books = this.booksLocalStorage.get(this.booksArrayKey);
-                    const index = books.findIndex(book => book.title === selectedItem.getCells()[0].getText()
+                    const index = this.arrayOfBooks.findIndex(book => book.title === selectedItem.getCells()[0].getText()
                     && book.author === selectedItem.getCells()[1].getText());
-                    books[index] = {
+                    this.arrayOfBooks[index] = {
                         title: title,            
                         author: author,           
                         genre: genre,            
                         year: year,           
                       };
-                    this.booksLocalStorage.put(this.booksArrayKey, books);
+                    this.booksLocalStorage.put(this.booksArrayKey, this.arrayOfBooks);
 
                     selectedItem.getCells()[0].setText(title);
                     selectedItem.getCells()[1].setText(author);
@@ -219,11 +233,10 @@ sap.ui.define([
                 const booksTable = this.getView().byId("booksTable");
                 const selectedItem = booksTable.getSelectedItem();
 
-                let books = this.booksLocalStorage.get(this.booksArrayKey);
-                const index = books.findIndex(book => book.title === selectedItem.getCells()[0].getText()
+                const index = this.arrayOfBooks.findIndex(book => book.title === selectedItem.getCells()[0].getText()
                     && book.author === selectedItem.getCells()[1].getText());
-                books.splice(index, 1);
-                this.booksLocalStorage.put(this.booksArrayKey, books);
+                this.arrayOfBooks.splice(index, 1);
+                this.booksLocalStorage.put(this.booksArrayKey, this.arrayOfBooks);
 
                 booksTable.removeItem(selectedItem);
                 this.deleteBookDialog.close();
@@ -237,7 +250,9 @@ sap.ui.define([
                 if (selectedItem === null)
                     MessageBox.warning(this.getView().getModel("i18n").getResourceBundle().getText("noSelectedBook"));
                 else {
-                    this.getRouter().navTo("bookDetails");
+                    const index = this.arrayOfBooks.findIndex(book => book.title === selectedItem.getCells()[0].getText()
+                    && book.author === selectedItem.getCells()[1].getText());
+                    this.getRouter().navTo("bookDetails", {bookId: this.arrayOfBooks[index].id});
                 }
             }
         });

@@ -1,11 +1,35 @@
 <mvc:View controllerName="library.controller.BookDetails"
     xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
     xmlns="sap.m"
-    xmlns:l="sap.ui.layout">
-    <Page id="bookDetailsPage" title="{i18n>title}">
+    xmlns:l="sap.ui.layout"
+	xmlns:f="sap.ui.layout.form">
+    <Page id="bookDetailsPage" title="{i18n>BookDetailsOf} {bookModel>/title}" showNavButton="true" navButtonPress=".onNavBack">
         <content>
-            <Text text="Details about a book">
-            </Text>
+            <Panel>
+                <headerToolbar>
+                    <Toolbar>
+                        <Title text="{i18n>BookIDColon} {bookModel>/id}" level="H2"/>
+						<ToolbarSpacer />
+                    </Toolbar>
+                </headerToolbar>
+                <content>
+					<f:SimpleForm
+						layout="ResponsiveGridLayout"
+						labelSpanL="3" labelSpanM="3" emptySpanL="4" emptySpanM="4"
+						columnsL="1" columnsM="1">
+						<f:content>
+							<Label text="{i18n>formTitle}"/>
+							<Text text="{bookModel>/title}"/>
+							<Label text="{i18n>formAuthor}"/>
+							<Text text="{bookModel>/author}"/>
+							<Label text="{i18n>formGenre}"/>
+							<Text text="{bookModel>/genre}"/>
+							<Label text="{i18n>formYear}"/>
+							<Text text="{bookModel>/year}"/>
+						</f:content>
+					</f:SimpleForm>
+				</content>
+            </Panel>
         </content>
     </Page>
 </mvc:View>
