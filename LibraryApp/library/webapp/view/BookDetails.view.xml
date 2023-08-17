@@ -13,7 +13,7 @@
                     </Toolbar>
                 </headerToolbar>
                 <content>
-                    <FlexBox direction="Row" alignItems="Start">
+                    <FlexBox direction="Row" alignItems="Start"> 
                         <items>
                             <Image id="bookCover" 
 							src="{= ${bookModel>/cover} === '/images/not-available.png' ? '/images/not-available.png' : ${bookModel>/cover} }" 
@@ -36,7 +36,20 @@
                         </items>
                     </FlexBox>
                 </content>
+			<VBox class="sapUiSmallMarginTop">
+                    <Title text="{i18n>RateBook}" width="150px"></Title>
+                    <RatingIndicator maxValue="5" value="0" />
+                <Title text="{i18n>Review}"></Title>
+				<TextArea showExceededText="true" maxLength="40" width="50%" liveChange="handleLiveChange" showValueStateMessage="false" valueLiveUpdate="true"/>
+				<Button text="{i18n>Submit}"></Button>
+            </VBox>
             </Panel>
         </content>
+		<footer>
+            <OverflowToolbar>
+            <ToolbarSpacer/>
+                <Button id="languageButton" press="changeLanguage"></Button>
+            </OverflowToolbar>
+        </footer>  
     </Page>
 </mvc:View>

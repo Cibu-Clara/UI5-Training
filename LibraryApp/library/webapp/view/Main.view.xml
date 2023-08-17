@@ -30,9 +30,7 @@
         <footer>
             <OverflowToolbar>
             <ToolbarSpacer/>
-                <Button id="languageButton" 
-                
-                press="changeLanguage"></Button>
+                <Button id="languageButton" press="changeLanguage"></Button>
             </OverflowToolbar>
         </footer>    
     </Page>

@@ -1,9 +1,9 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/core/UIComponent"
-], function (Controller, UIComponent){
+], function (Main, UIComponent){
     "use strict";
-    return Controller.extend("library.controller.BookDetails", {
+    return Main.extend("library.controller.BookDetails", {
 
         booksLocalStorage : jQuery.sap.storage(jQuery.sap.storage.Type.local),
         booksArrayKey : "LOCAL_STORAGE_KEY_BOOKS_ARRAY",
@@ -13,6 +13,15 @@ sap.ui.define([
                 .getRouter()
                 .getRoute("bookDetails")
                 .attachPatternMatched(this.getBookByID, this);
+
+            var oButton = this.getView().byId("languageButton");
+            let currentWindow = window.location.href;
+            if (currentWindow.includes("&sap-language=RO")) {
+                oButton.setIcon("/images/english.png" );
+            }
+            else {
+                oButton.setIcon("/images/romanian.png" );
+            }
         },
         getBookByID: function(oEvent) {
             const bookId = JSON.parse(oEvent.getParameter("arguments").bookId);
@@ -28,7 +37,6 @@ sap.ui.define([
                         year: b.year,
                         cover: this.getBookCover(b.title)
                     });
-                    console.log(this.getBookCover(b.title));
                     this.getView().setModel(oModel, "bookModel");
                 }
             });
@@ -50,6 +58,25 @@ sap.ui.define([
                 console.error("Error fetching book cover:", error);
                 return "/images/not-available.png";
             }
-        }
+        },
+        changeLanguage: function () {
+            let currentWindow = window.location.href;
+            if (currentWindow.includes("&sap-language=EN")) {
+              currentWindow = currentWindow.replace("&sap-language=EN", "&sap-language=RO");
+            }
+            else if (currentWindow.includes("&sap-language=RO")) {
+              currentWindow = currentWindow.replace("&sap-language=RO", "&sap-language=EN");
+            }
+            else {
+                currentWindow = currentWindow + "&sap-language=RO";
+            }
+            window.location.href = currentWindow;
+        },
+        handleLiveChange: function(oEvent) {
+            var oTextArea = oEvent.getSource();
+            var sNewValue = oEvent.getParameter("value");
+            var sValueState = sNewValue.length <= 40 ? "None" : "Warning";
+            oTextArea.setValueState(sValueState);
+          }
     });
 });

@@ -54,7 +54,6 @@ sap.ui.define([
                     booksTable.addItem(bookItem);
 
                 var oButton = this.getView().byId("languageButton");
-
                 let currentWindow = window.location.href;
                 if (currentWindow.includes("&sap-language=RO")) {
                     oButton.setIcon("/images/english.png" );
