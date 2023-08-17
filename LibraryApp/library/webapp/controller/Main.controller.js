@@ -52,6 +52,16 @@ sap.ui.define([
                 this.arrayOfBooks.forEach(b => {
                     const bookItem = this.addRow(b.title, b.author, b.genre, b.year)
                     booksTable.addItem(bookItem);
+
+                var oButton = this.getView().byId("languageButton");
+
+                let currentWindow = window.location.href;
+                if (currentWindow.includes("&sap-language=RO")) {
+                    oButton.setIcon("/images/english.png" );
+                }
+                else {
+                    oButton.setIcon("/images/romanian.png" );
+                }
                 })
             },
             onAddButton: function() {
@@ -254,6 +264,19 @@ sap.ui.define([
                     && book.author === selectedItem.getCells()[1].getText());
                     this.getRouter().navTo("bookDetails", {bookId: this.arrayOfBooks[index].id});
                 }
-            }
+            },
+            changeLanguage: function () {
+                let currentWindow = window.location.href;
+                if (currentWindow.includes("&sap-language=EN")) {
+                  currentWindow = currentWindow.replace("&sap-language=EN", "&sap-language=RO");
+                }
+                else if (currentWindow.includes("&sap-language=RO")) {
+                  currentWindow = currentWindow.replace("&sap-language=RO", "&sap-language=EN");
+                }
+                else {
+                    currentWindow = currentWindow + "&sap-language=RO";
+                }
+                window.location.href = currentWindow;
+              }
         });
     });

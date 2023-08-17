@@ -27,5 +27,13 @@
                     <Button text="{i18n>View-Details}" press="onViewButton"></Button>
             </l:HorizontalLayout>
         </content>
+        <footer>
+            <OverflowToolbar>
+            <ToolbarSpacer/>
+                <Button id="languageButton" 
+                
+                press="changeLanguage"></Button>
+            </OverflowToolbar>
+        </footer>    
     </Page>
 </mvc:View>
