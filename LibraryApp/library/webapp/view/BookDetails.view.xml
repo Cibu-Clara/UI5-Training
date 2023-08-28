@@ -13,36 +13,46 @@
                     </Toolbar>
                 </headerToolbar>
                 <content>
-                    <FlexBox direction="Row" alignItems="Start"> 
-                        <items>
-                            <Image id="bookCover" 
-							src="{= ${bookModel>/cover} === '/images/not-available.png' ? '/images/not-available.png' : ${bookModel>/cover} }" 
-							width="{/imageWidth}" height="220px"/>
-                            <f:SimpleForm
-                                layout="ResponsiveGridLayout"
-                                labelSpanL="3" labelSpanM="3" emptySpanL="4" emptySpanM="4"
-                                columnsL="1" columnsM="1">
-                                <f:content>
-                                    <Label text="{i18n>formTitle}"/>
-                                    <Text text="{bookModel>/title}"/>
-                                    <Label text="{i18n>formAuthor}"/>
-                                    <Text text="{bookModel>/author}"/>
-                                    <Label text="{i18n>formGenre}"/>
-                                    <Text text="{bookModel>/genre}"/>
-                                    <Label text="{i18n>formYear}"/>
-                                    <Text text="{bookModel>/year}"/>
-                                </f:content>
-                            </f:SimpleForm>
-                        </items>
-                    </FlexBox>
+                <HBox justifyContent="SpaceBetween">
+                    <VBox class="sapUiSmallMarginTop">
+                        <FlexBox direction="Row" alignItems="Start">
+                            <items>
+                                <Image id="bookCover" 
+                                src="{= ${bookModel>/cover} === '/images/not-available.png' ? '/images/not-available.png' : ${bookModel>/cover} }" 
+                                width="{/imageWidth}" height="220px"/>
+                                <f:SimpleForm
+                                    layout="ResponsiveGridLayout"
+                                    labelSpanL="3" labelSpanM="3" emptySpanL="4" emptySpanM="4"
+                                    columnsL="1" columnsM="1">
+                                    <f:content>
+                                        <Label text="{i18n>formTitle}"/>
+                                        <Text text="{bookModel>/title}"/>
+                                        <Label text="{i18n>formAuthor}"/>
+                                        <Text text="{bookModel>/author}"/>
+                                        <Label text="{i18n>formGenre}"/>
+                                        <Text text="{bookModel>/genre}"/>
+                                        <Label text="{i18n>formYear}"/>
+                                        <Text text="{bookModel>/year}"/>
+                                    </f:content>
+                                </f:SimpleForm>
+                            </items>
+                        </FlexBox>
+                        <Title class="sapUiSmallMarginTop" text="{i18n>RateBook}" width="150px"></Title>
+                        <RatingIndicator id="book-rating" change="onHandleChange" maxValue="5" value="0"/>
+                        <TextArea id="book-review" showExceededText="true" maxLength="100" width="500px" placeholder="{i18n>Review}" liveChange="handleLiveChange" showValueStateMessage="false" valueLiveUpdate="true"/>
+                        <Button text="{i18n>Submit}" press="onSubmit"></Button>
+                    </VBox>
+                    <VBox class="sapUiSmallMarginTop" alignItems="End">
+                        <RatingIndicator id="book-rating-indicator"/>
+                        <Label id="average-rating" text="{bookModel>/average}/5"/>
+                        <Table id="book-reviews" width="500px" backgroundDesign="Transparent" noDataText="No reviews yet">
+                            <columns>
+                                <Column id="empty-column" />
+                            </columns>
+                        </Table>
+                    </VBox>
+                </HBox>
                 </content>
-			<VBox class="sapUiSmallMarginTop">
-                    <Title text="{i18n>RateBook}" width="150px"></Title>
-                    <RatingIndicator maxValue="5" value="0" />
-                <Title text="{i18n>Review}"></Title>
-				<TextArea showExceededText="true" maxLength="40" width="50%" liveChange="handleLiveChange" showValueStateMessage="false" valueLiveUpdate="true"/>
-				<Button text="{i18n>Submit}"></Button>
-            </VBox>
             </Panel>
         </content>
 		<footer>

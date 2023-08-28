@@ -107,7 +107,9 @@ sap.ui.define([
                         title: title,
                         author: author,
                         genre: genre,
-                        year: year
+                        year: year,
+                        average: 0,
+                        reviews: []
                     };
 
                     this.arrayOfBooks.push(newBook);
