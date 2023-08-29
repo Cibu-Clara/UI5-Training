@@ -15,10 +15,11 @@ sap.ui.define([
                 .getRoute("bookDetails")
                 .attachPatternMatched(this.getBookByID, this);
 
-            console.log(this.getAverageRating());
-            this.ratingIndicator = this.getView().byId("book-rating-indicator");
+            this.ratingIndicator = this.getView().byId("book-rating");
             this.ratingIndicator.setValue(this.getAverageRating());
             this.ratingIndicator.setEnabled(false);
+
+            this.populateReviewsTable();
 
             var oButton = this.getView().byId("languageButton");
             let currentWindow = window.location.href;
@@ -96,8 +97,46 @@ sap.ui.define([
             this.ratingIndicator.setValue(this.getAverageRating());
         },
         onSubmit: function () {
-            const rating = this.getView().byId("book-rating");
+            const rating = this.getView().byId("book-rating-input");
+            const reviewInput = this.getView().byId("book-review-input");
+            const reviewsTable = this.getView().byId("book-reviews");
+        
             const ratingValue = rating.getValue();
+            const reviewValue = reviewInput.getValue();
+
+            let avg = this.setAverageRating(ratingValue);
+
+            if (avg) {
+                let reviews = this.getReviews();
+                if (reviews.length >= 3) {
+                    MessageBox.error(this.getView().getModel("i18n").getResourceBundle().getText("reviewsFull"));
+                    rating.setValue(0);
+                    reviewInput.setValue("");
+                    return 0;
+                }
+                else if (reviewValue === "") {
+                    MessageBox.warning(this.getView().getModel("i18n").getResourceBundle().getText("emptyReview"));
+                    return 0;
+                }
+                else {
+                    this.addReviewToTable(ratingValue, reviewValue, reviewsTable);
+                    const newReview = {
+                        rating: ratingValue,
+                        comment: reviewValue
+                    };
+                    reviews.push(newReview);
+                
+                this.ratingIndicator.setValue(avg);
+                this.updateBookLocalStorage(avg, reviews);
+                const averageRatingLabel = this.getView().byId("average-rating");
+                const averageRatingText = avg + "/5";
+                averageRatingLabel.setText(averageRatingText);
+                rating.setValue(0);
+                reviewInput.setValue("");
+                }
+            }
+        },
+        setAverageRating: function(ratingValue) {
             let avg;
             if (ratingValue === 0){
                 MessageBox.warning(this.getView().getModel("i18n").getResourceBundle().getText("ratingEmpty"));
@@ -111,18 +150,15 @@ sap.ui.define([
             else {
                 avg = ratingValue;
             }
-            this.ratingIndicator.setValue(avg);
-            this.updateBookLocalStorage(avg);
-            const averageRatingLabel = this.getView().byId("average-rating");
-            const averageRatingText = avg + "/5";
-            averageRatingLabel.setText(averageRatingText);
-            rating.setValue(0);
+            return avg;
         },
-        updateBookLocalStorage: function(avg) {
+        updateBookLocalStorage: function(avg, reviews) {
             let books = this.booksLocalStorage.get(this.booksArrayKey);
             let idCurrentBook = this.getIDFromUrl();
             const index = books.findIndex(b => b.id == idCurrentBook);
             books[index].average = avg;
+            books[index].reviews = reviews;
+
             this.booksLocalStorage.put(this.booksArrayKey, books);
         },
         getAverageRating: function () {
@@ -136,6 +172,59 @@ sap.ui.define([
                 }
             });
             return average;
-        }
+        },
+        getReviews: function() {
+            let books = this.booksLocalStorage.get(this.booksArrayKey);
+            let idCurrentBook = this.getIDFromUrl();
+            let reviews;
+
+            books.forEach((b) => {
+                if (b.id == idCurrentBook) {
+                    reviews = b.reviews;
+                }
+            });
+            return reviews;
+        },
+        addReviewToTable(ratingValue, reviewValue, reviewsTable) {
+            const rating = new sap.m.RatingIndicator({
+                value: ratingValue,
+                enabled: false,
+              });
+
+            const VBox = new sap.m.VBox({
+                backgroundDesign: "Transparent",
+                items: [
+                  rating,
+                  new sap.m.Text({
+                      text: reviewValue
+                    }),
+                ],
+              });
+
+            const HBox = new sap.m.HBox({
+              backgroundDesign: "Transparent",
+              items: [
+                new sap.m.Image({
+                  src: "/images/user.png",
+                  height: "5vh",
+                }),
+                VBox
+              ],
+            });
+      
+            const reviewToBePosted = new sap.m.ColumnListItem({
+              cells: [HBox],
+            });
+      
+            reviewsTable.addItem(reviewToBePosted);
+        },
+        populateReviewsTable: function () {
+            const reviewsTable = this.getView().byId("book-reviews");
+            const reviews = this.getReviews();
+            if (reviews !== null){
+                reviews.forEach((r) => {
+                    this.addReviewToTable(r.rating, r.comment, reviewsTable);});
+            };
+          },
     });
 });

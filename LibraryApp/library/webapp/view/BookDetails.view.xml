@@ -38,12 +38,12 @@
                             </items>
                         </FlexBox>
                         <Title class="sapUiSmallMarginTop" text="{i18n>RateBook}" width="150px"></Title>
-                        <RatingIndicator id="book-rating" change="onHandleChange" maxValue="5" value="0"/>
-                        <TextArea id="book-review" showExceededText="true" maxLength="100" width="500px" placeholder="{i18n>Review}" liveChange="handleLiveChange" showValueStateMessage="false" valueLiveUpdate="true"/>
+                        <RatingIndicator id="book-rating-input" change="onHandleChange" maxValue="5" value="0"/>
+                        <TextArea id="book-review-input" showExceededText="true" maxLength="100" width="500px" placeholder="{i18n>Review}" liveChange="handleLiveChange" showValueStateMessage="false" valueLiveUpdate="true"/>
                         <Button text="{i18n>Submit}" press="onSubmit"></Button>
                     </VBox>
                     <VBox class="sapUiSmallMarginTop" alignItems="End">
-                        <RatingIndicator id="book-rating-indicator"/>
+                        <RatingIndicator id="book-rating"/>
                         <Label id="average-rating" text="{bookModel>/average}/5"/>
                         <Table id="book-reviews" width="500px" backgroundDesign="Transparent" noDataText="No reviews yet">
                             <columns>
