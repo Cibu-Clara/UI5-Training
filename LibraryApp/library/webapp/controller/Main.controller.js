@@ -108,7 +108,6 @@ sap.ui.define([
                         author: author,
                         genre: genre,
                         year: year,
-                        average: 0,
                         reviews: []
                     };
 

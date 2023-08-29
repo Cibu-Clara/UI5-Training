@@ -16,9 +16,14 @@ sap.ui.define([
                 .attachPatternMatched(this.getBookByID, this);
 
             this.ratingIndicator = this.getView().byId("book-rating");
-            this.ratingIndicator.setValue(this.getAverageRating());
+            const avg = this.getAverageRating();
+            this.ratingIndicator.setValue(avg);
             this.ratingIndicator.setEnabled(false);
+            const averageRatingLabel = this.getView().byId("average-rating");
+            const averageRatingText = avg + "/5";
+            averageRatingLabel.setText(averageRatingText);
 
+            this.cnt = 0;
             this.populateReviewsTable();
 
             var oButton = this.getView().byId("languageButton");
@@ -42,7 +47,7 @@ sap.ui.define([
                         author: b.author,
                         genre: b.genre,
                         year: b.year,
-                        average: b.average,
+                        rating: b.rating,
                         reviews: b.reviews,
                         cover: this.getBookCover(b.title)
                     });
@@ -90,7 +95,7 @@ sap.ui.define([
         handleLiveChange: function (oEvent) {
             var oTextArea = oEvent.getSource();
             var sNewValue = oEvent.getParameter("value");
-            var sValueState = sNewValue.length <= 40 ? "None" : "Warning";
+            var sValueState = sNewValue.length <= 100 ? "None" : "Warning";
             oTextArea.setValueState(sValueState);
         },
         onHandleChange: function () {
@@ -104,9 +109,11 @@ sap.ui.define([
             const ratingValue = rating.getValue();
             const reviewValue = reviewInput.getValue();
 
-            let avg = this.setAverageRating(ratingValue);
-
-            if (avg) {
+            if (ratingValue === 0){
+                MessageBox.warning(this.getView().getModel("i18n").getResourceBundle().getText("ratingEmpty"));
+                return 0;
+            }
+            else {
                 let reviews = this.getReviews();
                 if (reviews.length >= 3) {
                     MessageBox.error(this.getView().getModel("i18n").getResourceBundle().getText("reviewsFull"));
@@ -118,6 +125,10 @@ sap.ui.define([
                     MessageBox.warning(this.getView().getModel("i18n").getResourceBundle().getText("emptyReview"));
                     return 0;
                 }
+                else if (reviewValue.length > 100) {
+                    MessageBox.warning(this.getView().getModel("i18n").getResourceBundle().getText("limitReview"));
+                    return 0;
+                }
                 else {
                     this.addReviewToTable(ratingValue, reviewValue, reviewsTable);
                     const newReview = {
@@ -126,8 +137,9 @@ sap.ui.define([
                     };
                     reviews.push(newReview);
                 
+                this.updateReviewsLocalStorage(reviews);
+                const avg = this.getAverageRating();
                 this.ratingIndicator.setValue(avg);
-                this.updateBookLocalStorage(avg, reviews);
                 const averageRatingLabel = this.getView().byId("average-rating");
                 const averageRatingText = avg + "/5";
                 averageRatingLabel.setText(averageRatingText);
@@ -136,41 +148,25 @@ sap.ui.define([
                 }
             }
         },
-        setAverageRating: function(ratingValue) {
-            let avg;
-            if (ratingValue === 0){
-                MessageBox.warning(this.getView().getModel("i18n").getResourceBundle().getText("ratingEmpty"));
-                return 0;
-            }
-            const avgRating = Number(this.getAverageRating());
-            if(avgRating !== 0) {
-                avg = (avgRating + ratingValue) / 2;
-                avg = avg.toFixed(1);
-            }
-            else {
-                avg = ratingValue;
-            }
-            return avg;
-        },
-        updateBookLocalStorage: function(avg, reviews) {
+        updateReviewsLocalStorage: function(reviews) {
             let books = this.booksLocalStorage.get(this.booksArrayKey);
             let idCurrentBook = this.getIDFromUrl();
             const index = books.findIndex(b => b.id == idCurrentBook);
-            books[index].average = avg;
             books[index].reviews = reviews;
 
             this.booksLocalStorage.put(this.booksArrayKey, books);
         },
         getAverageRating: function () {
-            let books = this.booksLocalStorage.get(this.booksArrayKey);
-            let idCurrentBook = this.getIDFromUrl();
-            let average;
+            const reviews = this.getReviews();
+            let average = 0;
 
-            books.forEach((b) => {
-                if (b.id == idCurrentBook) {
-                    average = b.average;
-                }
-            });
+            if (reviews.length !== 0) {
+                reviews.forEach((r) => {
+                    average += r.rating;
+                });
+            average = average / reviews.length;
+            average = average.toFixed(1);
+            }
             return average;
         },
         getReviews: function() {
@@ -186,11 +182,12 @@ sap.ui.define([
             return reviews;
         },
         addReviewToTable(ratingValue, reviewValue, reviewsTable) {
-            const rating = new sap.m.RatingIndicator({
+            const len = this.cnt;
+            const rating = new sap.m.RatingIndicator("comment" + len, {
                 value: ratingValue,
                 enabled: false,
               });
-
+            this.cnt ++;
             const VBox = new sap.m.VBox({
                 backgroundDesign: "Transparent",
                 items: [
@@ -225,6 +222,21 @@ sap.ui.define([
                 reviews.forEach((r) => {
                     this.addReviewToTable(r.rating, r.comment, reviewsTable);});
             };
-          },
+        },
+        handleDeleteComment: function(oEvent) {
+            const reviewsTable = this.getView().byId("book-reviews");
+            const rating = this.getView().byId("book-rating");
+            const listItem = oEvent.getParameter("listItem");
+            const index = reviewsTable.indexOfItem(listItem);
+			reviewsTable.removeItem(listItem);
+            let reviews = this.getReviews();
+            reviews.splice(index, 1);
+            this.updateReviewsLocalStorage(reviews);
+            const avg = this.getAverageRating();
+            rating.setValue(avg);
+            const averageRatingLabel = this.getView().byId("average-rating");
+            const averageRatingText = avg + "/5";
+            averageRatingLabel.setText(averageRatingText);
+        }
     });
 });

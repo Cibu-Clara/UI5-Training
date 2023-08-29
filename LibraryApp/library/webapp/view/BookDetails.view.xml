@@ -44,8 +44,8 @@
                     </VBox>
                     <VBox class="sapUiSmallMarginTop" alignItems="End">
                         <RatingIndicator id="book-rating"/>
-                        <Label id="average-rating" text="{bookModel>/average}/5"/>
-                        <Table id="book-reviews" width="500px" backgroundDesign="Transparent" noDataText="No reviews yet">
+                        <Label id="average-rating"/>
+                        <Table id="book-reviews" mode="Delete" delete="handleDeleteComment" width="500px" backgroundDesign="Transparent" noDataText="No reviews yet">
                             <columns>
                                 <Column id="empty-column" />
                             </columns>
