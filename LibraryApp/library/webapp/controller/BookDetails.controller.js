@@ -183,7 +183,7 @@ sap.ui.define([
         },
         addReviewToTable(ratingValue, reviewValue, reviewsTable) {
             const len = this.cnt;
-            const rating = new sap.m.RatingIndicator("comment" + len, {
+            const rating = new sap.m.RatingIndicator({
                 value: ratingValue,
                 enabled: false,
               });
