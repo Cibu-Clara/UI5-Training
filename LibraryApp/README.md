@@ -10,7 +10,7 @@ Users can view a list of books, add new books, update existing book details, and
 * Enable users to delete books from the library, with a confirmation prompt to avoid accidental deletions.
 * Add a search functionality to help users find specific books quickly.
 
-### Optional Enhancements:
+### Enhancements:
 
 * Include a detailed view for each book with more information, such as the book's description or cover image.
 * Implement local storage to persist the book library across page reloads.
